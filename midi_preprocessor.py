@@ -1,5 +1,6 @@
 import csv
 import argparse
+from pprint import pprint
 
 def parse_csv(file_path):
     """
@@ -27,7 +28,7 @@ def get_unique_drums(midi_data):
     for entry in midi_data:
         if entry['event_type'] != 'Note_on_c':
             continue
-        drums.add(entry['event_data'][1])
+        drums.add(int(entry['event_data'][1]))
 
     return drums
 
@@ -49,6 +50,12 @@ def get_ticks_per_bar(midi_data, bar_slices):
 
     return ticks_per_quarter_note * time_signature_numerator
 
+
+def get_total_bar_slices(midi_data, ticks_per_bar, bar_slices):
+    ticks_per_quarter_note = int(midi_data[0]['event_data'][2])
+
+    return (midi_data[-2]['tick'] // ticks_per_bar + 1) * bar_slices
+
 def process_midi_data(midi_data, bar_slices=16):
     """
     Process the MIDI data and generate vectors for each bar slice.
@@ -56,18 +63,32 @@ def process_midi_data(midi_data, bar_slices=16):
     vectors = []
 
     ticks_per_bar = get_ticks_per_bar(midi_data, bar_slices)
+    total_bar_slices = get_total_bar_slices(midi_data, ticks_per_bar, bar_slices)
+
     drums = get_unique_drums(midi_data)
 
-    bar_slice_idx = 0
-    bar_slice_data = []
+    bar_slice_data = {drum: [0] * total_bar_slices for drum in drums}
+
     for entry in midi_data:
         if entry['event_type'] != 'Note_on_c':
             continue
         
-        # TODO: set the drum info for a bar slice
-        pass
+        tick = entry['tick']
+        _, note, velocity = [int(value) for value in entry['event_data']]
 
-        vectors.append(bar_slice_data)
+        if velocity == 0:
+            continue
+
+        
+        bar_slice_idx = tick // (ticks_per_bar // bar_slices)
+
+        # Update the velocity information in bar_slice_data
+        bar_slice_data[note][bar_slice_idx] = velocity
+
+    pprint(bar_slice_data)
+    # Convert bar_slice_data to a list of vectors
+    for drum, velocities in bar_slice_data.items():
+        vectors.append(velocities)
 
     return vectors
 
