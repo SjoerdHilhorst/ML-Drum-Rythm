@@ -56,7 +56,7 @@ def get_total_bar_slices(midi_data, ticks_per_bar, bar_slices):
 
     return (midi_data[-2]['tick'] // ticks_per_bar + 1) * bar_slices
 
-def process_midi_data(midi_data, bar_slices=16):
+def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
     """
     Process the MIDI data and generate vectors for each bar slice.
     """
@@ -83,7 +83,7 @@ def process_midi_data(midi_data, bar_slices=16):
         bar_slice_idx = tick // (ticks_per_bar // bar_slices)
 
         # Update the velocity information in bar_slice_data
-        bar_slice_data[note][bar_slice_idx] = velocity
+        bar_slice_data[note][bar_slice_idx] = velocity if use_velocity else 1
 
     pprint(bar_slice_data)
     # Convert bar_slice_data to a list of vectors
@@ -96,10 +96,11 @@ def main():
     parser = argparse.ArgumentParser(description="Process MIDI information from a CSV file.")
     parser.add_argument("input_file", help="Path to the input CSV file containing MIDI information.")
     parser.add_argument("--bar_slices", type=int, default=16, help="Number of slices in one bar. Default is 16.")
+    parser.add_argument("--use_velocity", action="store_true", default=False, help="Use velocity to encode drum in vector. Default is false (use 1 or 0)")
     args = parser.parse_args()
 
     midi_data = parse_csv(args.input_file)
-    vectors = process_midi_data(midi_data, bar_slices=args.bar_slices)
+    vectors = process_midi_data(midi_data, bar_slices=args.bar_slices, use_velocity=args.use_velocity)
 
     # print("Output Vectors:")
     # for vector in vectors:
