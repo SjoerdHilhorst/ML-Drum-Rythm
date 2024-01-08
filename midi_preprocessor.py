@@ -1,6 +1,8 @@
 import csv
 import argparse
 from pprint import pprint
+from midi_notes_to_sounds import midi_notes_to_sounds
+import numpy as np
 
 def parse_csv(file_path):
     """
@@ -29,7 +31,6 @@ def get_unique_drums(midi_data):
         if entry['event_type'] != 'Note_on_c':
             continue
         drums.add(int(entry['event_data'][1]))
-
     return drums
 
 def get_ticks_per_bar(midi_data, bar_slices):
@@ -39,22 +40,18 @@ def get_ticks_per_bar(midi_data, bar_slices):
     # so the ticks_per_bar are 4 * ticks_per_quarter_note
     # We can now calculate the ticks in a bar slice:
     # ticks_per_bar_slice = ticks_per_par / bar_slices
-
-    # TODO: currently to stupid to handle different time signatures other than 4/4
-    # so needs to be implemented, but probably 4/4 is fine for this project
+    # because for this project we only use 4/4 we can simply do
+    # ticks_per_quarter_note * 4
 
     ticks_per_quarter_note = int(midi_data[0]['event_data'][2])
 
-    time_signature_numerator = int(midi_data[6]['event_data'][0])
-    time_signature_denominator = int(midi_data[6]['event_data'][1])
-
-    return ticks_per_quarter_note * time_signature_numerator
+    return ticks_per_quarter_note * 4
 
 
 def get_total_bar_slices(midi_data, ticks_per_bar, bar_slices):
     ticks_per_quarter_note = int(midi_data[0]['event_data'][2])
 
-    return (midi_data[-2]['tick'] // ticks_per_bar + 1) * bar_slices
+    return bar_slices * midi_data[-2]['tick'] // ticks_per_bar
 
 def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
     """
@@ -65,7 +62,7 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
     ticks_per_bar = get_ticks_per_bar(midi_data, bar_slices)
     total_bar_slices = get_total_bar_slices(midi_data, ticks_per_bar, bar_slices)
 
-    drums = get_unique_drums(midi_data)
+    drums = list(midi_notes_to_sounds.keys())
 
     bar_slice_data = {drum: [0] * total_bar_slices for drum in drums}
 
@@ -78,14 +75,16 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
 
         if velocity == 0:
             continue
-
+        
+        # only process notes that are defined in midi_notes_to_sounds
+        if note not in bar_slice_data:
+            continue
         
         bar_slice_idx = tick // (ticks_per_bar // bar_slices)
 
         # Update the velocity information in bar_slice_data
         bar_slice_data[note][bar_slice_idx] = velocity if use_velocity else 1
 
-    pprint(bar_slice_data)
     # Convert bar_slice_data to a list of vectors
     for drum, velocities in bar_slice_data.items():
         vectors.append(velocities)
@@ -101,10 +100,9 @@ def main():
 
     midi_data = parse_csv(args.input_file)
     vectors = process_midi_data(midi_data, bar_slices=args.bar_slices, use_velocity=args.use_velocity)
+    
+    np.save("data.npy", vectors)
 
-    # print("Output Vectors:")
-    # for vector in vectors:
-    #     print(vector)
 
 if __name__ == "__main__":
     main()
