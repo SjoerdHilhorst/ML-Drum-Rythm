@@ -1,23 +1,32 @@
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+import matplotlib.pyplot as plt
+import argparse
+from settings import settings
 
-def create_mlp_model(n, k):
+def create_mlp_model(timestep_window, number_of_drums):
     model = Sequential()
 
-    model.add(Dense(64, activation='relu', input_dim=(n * k)))
+    model.add(Dense(64, activation='relu', input_dim=(timestep_window * number_of_drums)))
     model.add(Dense(32, activation='relu'))
-    model.add(Dense(k, activation='softmax'))
+    model.add(Dense(number_of_drums, activation='softmax'))
 
     return model
 
-def train_model(model, X_train, y_train, epochs):
+def train_model(model, X_train, y_train, epochs, save_path):
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.fit(X_train, y_train, epochs=epochs)
 
-def generate_predictions(model, X_test):
-    predictions = model.predict(X_test)
-    return predictions
+    model.save(save_path)
+    print(f"Model saved to: {save_path}")
+
+def evaluate_model(model, X_test, y_test):
+    loss, accuracy = model.evaluate(X_test, y_test)
+
+    print(f"Test Loss: {loss}")
+    print(f"Test Accuracy: {accuracy}")
 
 def prepare_data_for_forecasting(data, n_steps, split_value=0.7):
     # Split the data into train and test sets
@@ -43,36 +52,40 @@ def prepare_data_for_forecasting(data, n_steps, split_value=0.7):
 
     return X_train, X_test, y_train, y_test
 
-def flattten_timeseries(X):
+def flatten_timeseries(X):
     return X.reshape((X.shape[0], X.shape[1] * X.shape[2]))
 
+def get_dataset(data_path, timestep_window):
+    time_series_data = np.load(data_path).transpose()
+
+    X_train, X_test, y_train, y_test = prepare_data_for_forecasting(time_series_data, timestep_window, split_value=0.7)
+
+    X_train = flatten_timeseries(X_train)
+    X_test = flatten_timeseries(X_test)
+    return X_train, X_test, y_train, y_test
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Train and save/load a TensorFlow model.")
+    parser.add_argument('--model_path', default='my_model.keras', help="Path to save/load the model")
+    parser.add_argument('--window', default=settings["window"], help="the size of the window of the previous barslices")
+    parser.add_argument('--data_path', default='data.npy', help="Path to the dataset")
+    parser.add_argument('--epochs', default=settings["epochs"], help="number of training epochs")
+    
+    args = parser.parse_args()
+
+    # Obtain dataset
+    X_train, X_test, y_train, y_test = get_dataset(args.data_path, args.window)
+
+    # Training model
+    print("Training model...")
+    number_of_drums = len(settings["midi_notes"])
+    model = create_mlp_model(args.window, number_of_drums)
+    train_model(model, X_train, y_train, int(args.epochs), args.model_path)
+
+    # Evaluating model
+    print("Evaluating model...")
+    evaluate_model(model, X_test, y_test)
 
 if __name__ == "__main__":
-    n = 8  # Number of previous timesteps
-
-    # Example data generation (replace this with your time series data)
-    time_series_data = np.load("data.npy").transpose()  # Replace with your actual
-    print(time_series_data.shape)
-    k = time_series_data.shape[1]
-
-
-    # Create MLP model
-    model = create_mlp_model(n, k)
-    X_train, X_test, y_train, y_test = prepare_data_for_forecasting(time_series_data, n, split_value=0.7)
-
-    X_train = flattten_timeseries(X_train)
-    X_test = flattten_timeseries(X_test)
-
-    # Train the model
-    epochs = 30  # Number of training epochs
-    train_model(model, X_train, y_train, epochs)
-
-    loss, accuracy = model.evaluate(X_test, y_test)
-
-    print(f"Test Loss: {loss}")
-    print(f"Test Accuracy: {accuracy}")
-
-    outcome = model.predict(X_test)
-    outcome = np.where(outcome > 0.2, 1, 0)
-
-    print(outcome, y_test)
+    main()

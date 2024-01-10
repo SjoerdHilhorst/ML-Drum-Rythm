@@ -1,7 +1,7 @@
 import csv
 import argparse
 from pprint import pprint
-from midi_notes_to_sounds import midi_notes_to_sounds
+from settings import settings
 import numpy as np
 
 def parse_csv(file_path):
@@ -62,7 +62,7 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
     ticks_per_bar = get_ticks_per_bar(midi_data, bar_slices)
     total_bar_slices = get_total_bar_slices(midi_data, ticks_per_bar, bar_slices)
 
-    drums = list(midi_notes_to_sounds.keys())
+    drums = list(settings["midi_notes"].keys())
 
     bar_slice_data = {drum: [0] * total_bar_slices for drum in drums}
 
@@ -94,15 +94,15 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
 def main():
     parser = argparse.ArgumentParser(description="Process MIDI information from a CSV file.")
     parser.add_argument("input_file", help="Path to the input CSV file containing MIDI information.")
-    parser.add_argument("--bar_slices", type=int, default=16, help="Number of slices in one bar. Default is 16.")
-    parser.add_argument("--use_velocity", action="store_true", default=False, help="Use velocity to encode drum in vector. Default is false (use 1 or 0)")
+    parser.add_argument("--bar_slices", type=int, default=settings["bar_slices"], help="Number of slices in one bar. Default is 16.")
+    parser.add_argument("--use_velocity", action="store_true", default=settings["use_velocity"], help="Use velocity to encode drum in vector. Default is false (use 1 or 0)")
     args = parser.parse_args()
 
     midi_data = parse_csv(args.input_file)
     vectors = process_midi_data(midi_data, bar_slices=args.bar_slices, use_velocity=args.use_velocity)
     
     np.save("data.npy", vectors)
-
+    print("Saved drum data to data.npy!")
 
 if __name__ == "__main__":
     main()
