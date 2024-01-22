@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
 import argparse
 from settings import settings
+import keras
 
 def create_mlp_model(timestep_window, number_of_drums):
     model = Sequential()
@@ -16,7 +17,8 @@ def create_mlp_model(timestep_window, number_of_drums):
     return model
 
 def train_model(model, X_train, y_train, epochs, save_path):
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    opt = keras.optimizers.Adam(learning_rate=0.0001)
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'], )
     model.fit(X_train, y_train, epochs=epochs)
 
     model.save(save_path)

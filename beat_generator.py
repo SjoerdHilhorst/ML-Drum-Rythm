@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import tensorflow as tf
 from settings import settings
+import matplotlib.pyplot as plt
 
 def load_model(model_path):
     model = tf.keras.models.load_model(model_path)
@@ -26,6 +27,24 @@ def generate_new_bar_slices(model, initial_slices, num_steps, instruments, thres
 
     return current_slices
 
+def plot(slices):
+    result_arrays = [[], [], [], []]
+
+    ordered_keys = sorted(settings["midi_notes"].keys())
+    for i, single_slice in enumerate(slices):
+        result_arrays[i % 4].append(single_slice)
+
+    print(result_arrays)
+    # Plot each array with subtitles
+    fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
+
+    for i, result_array in enumerate(result_arrays):
+        axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
+        axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
+
+    plt.xlabel('Index')
+    plt.show()
+
 def main():
     parser = argparse.ArgumentParser(description="Generate beats using a trained model.")
     parser.add_argument('--model_path', default="my_model.keras", help="Path to the trained model file (in .keras format)")
@@ -37,11 +56,17 @@ def main():
     model = load_model(args.model_path)
 
     # Convert initial_slices to a numpy array
-    initial_slices = np.array([1, 1, 1, 0] * 8)
+    initial_slices = np.array([
+        1, 0, 0, 1,
+        0, 0, 0, 1,
+        0, 1, 0, 1,
+        0, 0, 0, 1,  
+    ] * 4)
 
     # Generate new bar slices using the iterative process
-    final_slices = generate_new_bar_slices(model, initial_slices, args.num_steps, len(settings["midi_notes"]))
-    print(final_slices)
+    final_slices = generate_new_bar_slices(model, initial_slices, args.num_steps, len(settings["midi_notes"]), 0.5)
 
+    print(final_slices)
+    plot(final_slices)
 if __name__ == "__main__":
     main()
