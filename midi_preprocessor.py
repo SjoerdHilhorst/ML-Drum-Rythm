@@ -104,5 +104,18 @@ def main():
     np.save("data.npy", vectors)
     print("Saved drum data to data.npy!")
 
+
+def preprocess(input_file, bar_slices=16, use_velocity=False):
+    """
+    Preprocess the MIDI data and generate vectors for each bar slice.
+    Alternative to main() for use in other files.
+    """
+    midi_data = parse_csv(input_file)
+    vectors = process_midi_data(midi_data, bar_slices=bar_slices, use_velocity=use_velocity)
+
+    np.save("data.npy", vectors)
+    print("Saved drum data to data.npy!")
+
+
 if __name__ == "__main__":
     main()
