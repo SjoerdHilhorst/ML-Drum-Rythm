@@ -3,8 +3,10 @@
 settings = {
     # how many previous timesteps are used
     "window": 8,
+
     # use integer velocity values or boolean
     "use_velocity": False,
+
     # how many slices are in one bar, default 16
     "bar_slices": 16,
 
@@ -14,7 +16,7 @@ settings = {
     # determine which instruments are used
     "midi_notes": {
         36: "Bass Drum 1",
-        39: "Hand Clap",
+        # 39: "Hand Clap",
         40: "Electric Snare",
         42: "Closed Hi-Hat",
         # 44: "Pedal Hi-Hat",
@@ -23,7 +25,7 @@ settings = {
         # 49: "Crash Cymbal 1",
         # 51: "Ride Cymbal 1",
         # 53: "Ride Bell",
-        # 56: "Cowbell",
+        56: "Cowbell",
     },
 
     # how many bar slices to generate in the final beat
