@@ -2,7 +2,7 @@
 # https://www.zendrum.com/resource-site/drumnotes.htm
 settings = {
     # how many previous timesteps are used
-    "window": 8,
+    "window": 16,
 
     # use integer velocity values or boolean
     "use_velocity": False,
@@ -11,7 +11,7 @@ settings = {
     "bar_slices": 16,
 
     # how many training epochs
-    "epochs": 20,
+    "epochs": 100,
 
     # determine which instruments are used
     "midi_notes": {
