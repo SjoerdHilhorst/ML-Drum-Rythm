@@ -5,6 +5,7 @@ from settings import settings
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+from decision_making import threshold_signal, probability_signal, sigmoid_signal
 
 
 def load_model(model_path):
@@ -12,11 +13,11 @@ def load_model(model_path):
     return model
 
 
-def generate_new_bar_slices(model, initial_slices, num_steps, instruments, threshold=0.5):
+def generate_new_bar_slices(model, initial_slices, num_steps, decision_algorithm, instruments, threshold=0.5):
     generated_slices = initial_slices.copy()
     generated_hypothesis_vector = np.array([])
 
-    print(generated_slices)
+    print("Initial drums: ", generated_slices)
     for step in range(num_steps):
         window = generated_slices[- settings['window'] * instruments:]
 
@@ -24,8 +25,8 @@ def generate_new_bar_slices(model, initial_slices, num_steps, instruments, thres
         probabilities = model.predict(np.expand_dims(window, axis=0))[0]
         generated_hypothesis_vector = np.append(generated_hypothesis_vector, probabilities)
 
-        # Apply thresholding to obtain binary values
-        binary_predictions = (probabilities > threshold).astype(int)
+        # Apply decision algorithm to obtain binary values
+        binary_predictions = decision_algorithm(probabilities).astype(int)
 
         # Append the new slices to the generated slices
         generated_slices = np.append(generated_slices, binary_predictions)
@@ -99,8 +100,11 @@ def main():
                                   0, 0, 0, 1,
                               ] * instruments)
 
+    # Define the decision algorithm
+    decision_algorithm = threshold_signal
+
     # Generate new bar slices using the iterative process
-    final_slices, hypothesis_vector = generate_new_bar_slices(model, initial_slices, args.num_steps, instruments)
+    final_slices, hypothesis_vector = generate_new_bar_slices(model, initial_slices, args.num_steps, decision_algorithm=decision_algorithm, instruments=instruments)
 
     # Generate image to visualize the generated bar slices
     visualize_bar_slices(final_slices, "generated.png")
