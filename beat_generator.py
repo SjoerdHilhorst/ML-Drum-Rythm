@@ -1,4 +1,6 @@
 import argparse
+import os
+
 import numpy as np
 import tensorflow as tf
 from settings import settings
@@ -57,7 +59,7 @@ def visualize_bar_slices(bar_slices, img_path="generated.png"):
     plt.title("Generated Bar Slices")
     plt.xlabel("Bars")
     plt.ylabel("Drums")
-    plt.savefig(img_path)
+    plt.savefig(os.path.join("img", img_path))
     plt.show()
 
 
@@ -107,10 +109,10 @@ def main():
     final_slices, hypothesis_vector = generate_beat(model, initial_slices, args.num_steps, decision_algorithm=decision_algorithm, instruments=instruments)
 
     # Generate image to visualize the generated bar slices
-    visualize_bar_slices(final_slices, "generated.png")
+    visualize_bar_slices(final_slices, "img/generated.png")
 
     # Generate image to visualize the hypothesis vector
-    visualize_bar_slices(hypothesis_vector, "hypothesis.png")
+    visualize_bar_slices(hypothesis_vector, "img/hypothesis.png")
     print(final_slices)
 
     plot(final_slices)
