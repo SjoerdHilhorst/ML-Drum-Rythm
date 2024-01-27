@@ -104,7 +104,11 @@ def main():
     decision_algorithm = threshold_signal
 
     # Generate new bar slices using the iterative process
+<<<<<<< HEAD
     final_slices, hypothesis_vector = generate_beat(model, initial_slices, args.num_steps, decision_algorithm=decision_algorithm, instruments=instruments)
+=======
+    final_slices, hypothesis_vector = generate_new_bar_slices(model, initial_slices, args.num_steps, decision_algorithm=decision_algorithm, instruments=instruments)
+>>>>>>> 442d2c4dfff614dc9e6082f63d660257fd323846
 
     # Generate image to visualize the generated bar slices
     visualize_bar_slices(final_slices, "generated.png")
