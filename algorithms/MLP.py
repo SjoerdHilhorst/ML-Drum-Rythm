@@ -1,4 +1,4 @@
-import BaseModel
+from algorithms.BaseModel import BaseModel
 
 
 class MLP(BaseModel):

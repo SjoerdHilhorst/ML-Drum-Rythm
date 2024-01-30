@@ -7,11 +7,18 @@ from settings import settings
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+import pickle
+
 from decision_making import threshold_signal, probability_signal, sigmoid_signal
 
 
 def load_model(model_path):
-    model = tf.keras.models.load_model(model_path)
+    model_path = os.path.join(settings['models_dir'], model_path)
+
+    if model_path.endswith(".sav"):
+        model = pickle.load(open(model_path, 'rb'))
+    else:
+        model = tf.keras.models.load_model(model_path)
     return model
 
 
@@ -81,15 +88,12 @@ def plot(slices):
     plt.xlabel('Index')
     plt.show()
 
-def main():
-    parser = argparse.ArgumentParser(description="Generate beats using a trained model.")
-    parser.add_argument('--model_path', default="my_model.keras", help="Path to the trained model file (in .keras format)")
-    parser.add_argument('--num_steps', type=int, default=settings["slices_to_generate"], help="Number of bar slices to generate")
-
-    args = parser.parse_args()
-
+def generate_beats(model_path="my_model.keras", num_steps=settings["slices_to_generate"]):
+    """
+    Alternative main function to generate beats using the trained model.
+    """
     # Load the pre-trained model
-    model = load_model(args.model_path)
+    model = load_model(os.path.join(model_path))
 
     # Get number of instruments/drums
     instruments = len(settings["midi_notes"])
@@ -106,16 +110,26 @@ def main():
     decision_algorithm = threshold_signal
 
     # Generate new bar slices using the iterative process
-    final_slices, hypothesis_vector = generate_beat(model, initial_slices, args.num_steps, decision_algorithm=decision_algorithm, instruments=instruments)
+    final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
+                                                    decision_algorithm=decision_algorithm, instruments=instruments)
 
     # Generate image to visualize the generated bar slices
-    visualize_bar_slices(final_slices, "img/generated.png")
+    visualize_bar_slices(final_slices, "generated.png")
 
     # Generate image to visualize the hypothesis vector
-    visualize_bar_slices(hypothesis_vector, "img/hypothesis.png")
+    visualize_bar_slices(hypothesis_vector, "hypothesis.png")
     print(final_slices)
 
     plot(final_slices)
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate beats using a trained model.")
+    parser.add_argument('--model_path', default="my_model.keras", help="Path to the trained model file (in .keras format)")
+    parser.add_argument('--num_steps', type=int, default=settings["slices_to_generate"], help="Number of bar slices to generate")
+
+    args = parser.parse_args()
+
+    generate_beats(args.model_path, args.num_steps)
 
 if __name__ == "__main__":
     main()

@@ -4,6 +4,9 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
 import argparse
+
+from algorithms.LinearRegression import LinearRegression
+from algorithms.MLP import MLP
 from settings import settings
 import keras
 
@@ -67,6 +70,26 @@ def get_dataset(data_path, timestep_window):
     return X_train, X_test, y_train, y_test
 
 
+def train_model(model_name="my_model.keras", window=settings["window"], data_path="data.npy", epochs=settings["epochs"]):
+    # Obtain dataset
+    X_train, X_test, y_train, y_test = get_dataset(data_path, window)
+
+    # Choosing model
+    print("Creating model...")
+    algorithm = LinearRegression()
+    # algorithm = MLP()
+
+    # Training model
+    print("Training model...")
+    number_of_drums = len(settings["midi_notes"])
+    algorithm.create(window, number_of_drums)
+    algorithm.train(X_train, y_train, int(epochs), model_name)
+
+    # Evaluating model
+    print("Evaluating model...")
+    print(algorithm.evaluate(X_test, y_test))
+
+
 def main():
     parser = argparse.ArgumentParser(description="Train and save/load a TensorFlow model.")
     parser.add_argument('--model_path', default='my_model.keras', help="Path to save/load the model")
@@ -76,18 +99,8 @@ def main():
     
     args = parser.parse_args()
 
-    # Obtain dataset
-    X_train, X_test, y_train, y_test = get_dataset(args.data_path, args.window)
+    train_model(args.model_path, args.window, args.data_path, args.epochs)
 
-    # Training model
-    print("Training model...")
-    number_of_drums = len(settings["midi_notes"])
-    model = create_mlp_model(args.window, number_of_drums)
-    train_model(model, X_train, y_train, int(args.epochs), args.model_path)
-
-    # Evaluating model
-    print("Evaluating model...")
-    evaluate_model(model, X_test, y_test)
 
 if __name__ == "__main__":
     main()

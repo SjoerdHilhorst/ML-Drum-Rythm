@@ -1,5 +1,5 @@
 data.npy
-my_model.keras
+models/my_model.keras
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

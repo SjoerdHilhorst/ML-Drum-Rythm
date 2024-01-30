@@ -29,6 +29,8 @@ settings = {
     },
 
     # how many bar slices to generate in the final beat
-    "slices_to_generate": 64 
+    "slices_to_generate": 64,
 
+    # path to the folder where the models are saved
+    "models_dir": "models",
 }

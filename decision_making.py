@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def graph(data, filename):
     # Convert data to DataFrame
     df = pd.DataFrame(data)
@@ -18,10 +19,12 @@ def graph(data, filename):
     plt.ylabel('DataType')
 
     plt.tight_layout()
-    plt.savefig(os.path.join("img", filename))
+    plt.savefig(os.path.join(filename))
+
 
 def threshold_signal(data, threshold=0.5):
     return (data > threshold).astype(int)
+
 
 def probability_signal(probabilities):    
     # Generate a uniform random matrix of the same shape as the input data
@@ -32,11 +35,14 @@ def probability_signal(probabilities):
     
     return binary_matrix
 
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+
 def sigmoid_signal(data, scaling_factor):
     return sigmoid(scaling_factor*(data - 0.5))
+
 
 initial_signal = np.random.rand(3, 16)
 graph(initial_signal, "img/initial_signal.png")
