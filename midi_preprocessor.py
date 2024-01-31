@@ -100,8 +100,8 @@ def main():
 
     midi_data = parse_csv(args.input_file)
     vectors = process_midi_data(midi_data, bar_slices=args.bar_slices, use_velocity=args.use_velocity)
-    
-    np.save("data.npy", vectors)
+
+    np.save("rockdata.npy", vectors)
     print("Saved drum data to data.npy!")
 
 

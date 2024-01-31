@@ -94,7 +94,7 @@ def main():
     parser = argparse.ArgumentParser(description="Train and save/load a TensorFlow model.")
     parser.add_argument('--model_path', default='my_model.keras', help="Path to save/load the model")
     parser.add_argument('--window', default=settings["window"], help="the size of the window of the previous barslices")
-    parser.add_argument('--data_path', default='data.npy', help="Path to the dataset")
+    parser.add_argument('--data_path', default='rockdata.npy', help="Path to the dataset")
     parser.add_argument('--epochs', default=settings["epochs"], help="number of training epochs")
     
     args = parser.parse_args()
