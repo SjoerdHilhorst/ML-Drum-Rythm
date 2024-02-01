@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
 
-from decision_making import threshold_signal, probability_signal, sigmoid_signal
+from decision_making import *
 
 
 def load_model(model_path):
@@ -22,7 +22,7 @@ def load_model(model_path):
     return model
 
 
-def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments, threshold=0.5):
+def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments):
     generated_slices = initial_slices.copy()
     generated_hypothesis_vector = np.array([])
 
@@ -70,7 +70,7 @@ def visualize_bar_slices(bar_slices, img_path="generated.png"):
     plt.show()
 
 
-def plot(slices):
+def plot(slices, figure_name="generated.png"):
     result_arrays = [[], [], [], []]
 
     ordered_keys = sorted(settings["midi_notes"].keys())
@@ -86,9 +86,14 @@ def plot(slices):
         axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
 
     plt.xlabel('Index')
+    plt.savefig(figure_name)
     plt.show()
 
-def generate_beats(model_path="my_model.keras", num_steps=settings["slices_to_generate"]):
+
+def generate_beats(model_path="my_model.keras",
+                   num_steps=settings["slices_to_generate"],
+                   decision_algorithm=threshold_signal,
+                   save_path="linear_regression/"):
     """
     Alternative main function to generate beats using the trained model.
     """
@@ -106,21 +111,33 @@ def generate_beats(model_path="my_model.keras", num_steps=settings["slices_to_ge
                                   0, 0, 0, 1,
                               ] * instruments)
 
-    # Define the decision algorithm
-    decision_algorithm = threshold_signal
-
     # Generate new bar slices using the iterative process
     final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
-                                                    decision_algorithm=decision_algorithm, instruments=instruments)
+                                                    decision_algorithm=decision_algorithm,
+                                                    instruments=instruments)
 
     # Generate image to visualize the generated bar slices
-    visualize_bar_slices(final_slices, "generated.png")
+    # visualize_bar_slices(final_slices, "generated.png")
 
     # Generate image to visualize the hypothesis vector
-    visualize_bar_slices(hypothesis_vector, "hypothesis.png")
-    print(final_slices)
+    # visualize_bar_slices(hypothesis_vector, "hypothesis.png")
+    # print(final_slices)
 
-    plot(final_slices)
+    # Create figure name
+    figure_name = save_path + "generated"
+
+    if decision_algorithm == threshold_signal:
+        figure_name += "_threshold_" + str(settings['threshold'])
+    elif decision_algorithm == probability_signal:
+        figure_name += "_probability"
+    elif decision_algorithm == combined_decision_algorithm:
+        figure_name += "_combined_" + str(settings['scaling_factor'])
+
+    figure_name += ".png"
+
+    # Plot the generated slices
+    plot(final_slices, figure_name=os.path.join("img", "", figure_name))
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate beats using a trained model.")

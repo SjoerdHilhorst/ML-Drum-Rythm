@@ -1,9 +1,9 @@
 import os
-
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from settings import settings
 
 
 def graph(data, filename):
@@ -22,11 +22,11 @@ def graph(data, filename):
     plt.savefig(os.path.join(filename))
 
 
-def threshold_signal(data, threshold=0.5):
+def threshold_signal(data):
     """
     Threshold a matrix of values to a binary matrix, given a threshold.
     """
-    return (data > threshold).astype(int)
+    return (data > settings["threshold"]).astype(int)
 
 
 def probability_signal(probabilities):
@@ -54,21 +54,22 @@ def sigmoid_signal(data, scaling_factor):
     return sigmoid(scaling_factor*(data - 0.5))
 
 
-def combined_decision_algorithm(probabilities, scaling_factor):
+def combined_decision_algorithm(probabilities):
     """
     Combine the sigmoid signal and probability signal algorithms.
     """
+    scaling_factor = settings["scaling_factor"]
     transformed_probabilities = sigmoid_signal(probabilities, scaling_factor)
     return probability_signal(transformed_probabilities)
 
 
 initial_signal = np.random.rand(3, 16)
-graph(initial_signal, "img/linear_regression/thresholding/initial_signal.png")
+graph(initial_signal, "img/old/initial_signal.png")
 treshholded_signal = threshold_signal(initial_signal)
-graph(treshholded_signal, "img/linear_regression/thresholding/treshholded_signal.png")
+graph(treshholded_signal, "img/old/treshholded_signal.png")
 diced_signal = probability_signal(initial_signal)
-graph(diced_signal, "img/linear_regression/thresholding/probability_signal.png")
+graph(diced_signal, "img/old/probability_signal.png")
 transformed_signal = sigmoid_signal(initial_signal, 8)
-graph(transformed_signal, "img/linear_regression/thresholding/transformed_signal.png")
+graph(transformed_signal, "img/old/transformed_signal.png")
 diced_transformed_signal = probability_signal(transformed_signal)
-graph(diced_transformed_signal, "img/linear_regression/thresholding/diced_transformed_signal.png")
+graph(diced_transformed_signal, "img/old/diced_transformed_signal.png")

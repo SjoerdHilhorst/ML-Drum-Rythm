@@ -34,7 +34,6 @@ class LinearRegression(BaseModel):
         :param model_path: the path to save the model to
         :return: the trained model
         """
-        # TODO convert data to the right format, with windows, instead of the entire sequence
         print(X_train.shape)
         print(y_train.shape)
 

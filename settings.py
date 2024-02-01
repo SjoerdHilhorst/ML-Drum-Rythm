@@ -34,4 +34,8 @@ settings = {
 
     # path to the folder where the models are saved
     "models_dir": "models",
+
+    # settings for the decision-making algorithms
+    "scaling_factor": 4.0,
+    "threshold": 0.5,
 }
