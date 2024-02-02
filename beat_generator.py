@@ -1,12 +1,5 @@
 import argparse
-import os
-
-import numpy as np
 import tensorflow as tf
-from settings import settings
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
 import pickle
 
 from decision_making import *
@@ -93,7 +86,8 @@ def plot(slices, figure_name="generated.png"):
 def generate_beats(model_path="my_model.keras",
                    num_steps=settings["slices_to_generate"],
                    decision_algorithm=threshold_signal,
-                   save_path="linear_regression/"):
+                   save_path="linear_regression/",
+                   initial_slices=None):
     """
     Alternative main function to generate beats using the trained model.
     """
@@ -103,25 +97,19 @@ def generate_beats(model_path="my_model.keras",
     # Get number of instruments/drums
     instruments = len(settings["midi_notes"])
 
-    # Convert initial_slices to a numpy array
-    initial_slices = np.array([
-                                  1, 0, 0, 1,
-                                  0, 0, 0, 1,
-                                  0, 1, 0, 1,
-                                  0, 0, 0, 1,
-                              ] * instruments)
+    # If no initial slices are provided, use a hardcoded sequence
+    if initial_slices is None:
+        initial_slices = np.array([
+                             1, 0, 0, 1,
+                             0, 0, 0, 1,
+                             0, 1, 0, 1,
+                             0, 0, 0, 1,
+                         ] * instruments)
 
     # Generate new bar slices using the iterative process
     final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
                                                     decision_algorithm=decision_algorithm,
                                                     instruments=instruments)
-
-    # Generate image to visualize the generated bar slices
-    # visualize_bar_slices(final_slices, "generated.png")
-
-    # Generate image to visualize the hypothesis vector
-    # visualize_bar_slices(hypothesis_vector, "hypothesis.png")
-    # print(final_slices)
 
     # Create figure name
     figure_name = save_path + "generated"
@@ -133,10 +121,16 @@ def generate_beats(model_path="my_model.keras",
     elif decision_algorithm == combined_decision_algorithm:
         figure_name += "_combined_" + str(settings['scaling_factor'])
 
-    figure_name += ".png"
+    # If the img directory does not exist, create it
+    if not os.path.exists(save_path):
+        print("Creating directory: ", save_path)
+        os.makedirs(save_path)
 
     # Plot the generated slices
-    plot(final_slices, figure_name=os.path.join("img", "", figure_name))
+    plot(final_slices, figure_name=figure_name + ".png")
+
+    # Save the bar slices to a file
+    np.save(figure_name + ".npy", final_slices)
 
 
 def main():
@@ -147,6 +141,7 @@ def main():
     args = parser.parse_args()
 
     generate_beats(args.model_path, args.num_steps)
+
 
 if __name__ == "__main__":
     main()

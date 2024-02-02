@@ -1,12 +1,12 @@
 import argparse
 from algorithms.LinearRegression import LinearRegression
 from settings import settings
-from get_preprocessed_dataset import get_dataset
+from get_preprocessed_dataset import get_dataset_with_multiple_songs
 
 
 def train_model(model_name="my_model.keras", window=settings["window"], data_path="data.npy", epochs=settings["epochs"]):
     # Obtain dataset
-    X_train, X_test, y_train, y_test = get_dataset(data_path, window)
+    X_train, X_test, y_train, y_test = get_dataset_with_multiple_songs(data_path, window)
 
     # Choosing model
     print("Creating model...")
