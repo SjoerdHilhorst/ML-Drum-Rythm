@@ -16,16 +16,23 @@ settings = {
     # determine which instruments are used
     "midi_notes": {
         36: "Bass Drum 1",
-        38: "Snare",
+        # 37: "Side Stick",
+        38: "Acoustic Snare",
         # 40: "Electric Snare",
         42: "Closed Hi-Hat",
         # 44: "Pedal Hi-Hat",
-        # 45: "Low Tom 1",
-        # 46: "Hi-Hat Open",
-        # 49: "Crash Cymbal 1",
-        50: "High Tom"
+        # 45: "Low Tom",
+        # 46: "Open Hi-Hat",
+        # 48: "Hi-Mid Tom",
+        49: "Crash Cymbal 1",
+        # 50: "High Tom",
         # 51: "Ride Cymbal 1",
+        # 52: "Chinese Cymbal",
         # 53: "Ride Bell",
+        # 55: "Splash Cymbal",
+        # 57: "Crash Cymbal 2",
+        # 58: "Vibraslap",
+        # 59: "Ride Cymbal 2",
         # 56: "Cowbell",
     },
 
@@ -37,5 +44,5 @@ settings = {
 
     # settings for the decision-making algorithms
     "scaling_factor": 4.0,
-    "threshold": 0.5,
+    "threshold": 0.05,
 }

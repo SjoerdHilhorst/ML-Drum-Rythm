@@ -1,7 +1,10 @@
 import argparse
+
+import matplotlib
 import tensorflow as tf
 import pickle
 
+from settings import settings
 from decision_making import *
 
 
@@ -64,21 +67,33 @@ def visualize_bar_slices(bar_slices, img_path="generated.png"):
 
 
 def plot(slices, figure_name="generated.png"):
-    result_arrays = [[], [], [], []]
+    no_instruments = len(settings["midi_notes"])
 
+    # Set font size
+    font = {'family': 'normal',
+            # 'weight': 'bold',
+            'size': 20}
+
+    matplotlib.rc('font', **font)
+
+    # Split the slices into arrays for each instrument
+    result_arrays = [[]] * no_instruments
     ordered_keys = sorted(settings["midi_notes"].keys())
     for i, single_slice in enumerate(slices):
-        result_arrays[i % 4].append(single_slice)
+        result_arrays[i % no_instruments].append(single_slice)
 
     print(result_arrays)
+
     # Plot each array with subtitles
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
+    fig, axs = plt.subplots(no_instruments, 1, figsize=(10, 2.5 * no_instruments), sharex=True)
 
     for i, result_array in enumerate(result_arrays):
         axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
         axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
 
-    plt.xlabel('Index')
+    plt.xlabel(r'$n$')
+    plt.setp(axs[:], ylabel=r'$\mathbf{u}(n)$')
+    fig.tight_layout()
     plt.savefig(figure_name)
     plt.show()
 
@@ -107,7 +122,9 @@ def generate_beats(model_path="my_model.keras",
                          ] * instruments)
 
     # Generate new bar slices using the iterative process
-    final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
+    final_slices, hypothesis_vector = generate_beat(model=model,
+                                                    initial_slices=initial_slices,
+                                                    num_steps=num_steps,
                                                     decision_algorithm=decision_algorithm,
                                                     instruments=instruments)
 
