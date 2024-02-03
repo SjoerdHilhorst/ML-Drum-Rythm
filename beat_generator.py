@@ -22,13 +22,13 @@ def load_model(model_path):
     return model
 
 
-def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments):
+def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments, window_size):
     generated_slices = initial_slices.copy()
     generated_hypothesis_vector = np.array([])
 
     print("Initial drums: ", generated_slices)
     for step in range(num_steps):
-        window = generated_slices[- settings['window'] * instruments:]
+        window = generated_slices[- window_size * instruments:]
 
         # Make predictions for the current slices
         probabilities = model.predict(np.expand_dims(window, axis=0))[0]
@@ -87,8 +87,21 @@ def plot(slices, figure_name="generated.png"):
 
     plt.xlabel('Index')
     plt.savefig(figure_name)
-    plt.show()
+    plt.close()
 
+def get_initial_beat_from_dataset(example_index=0, window_size=16):
+    # Load the dataset
+    dataset = np.load('data.npy').transpose()
+
+    # Select the example
+    example = dataset[:, :, example_index] 
+
+    # Determine the length of the sequence you want to extract for each drum
+    sequence_length = window_size
+
+    # Extract the initial sequences for every drum
+    # This results in a matrix of shape (sequence_length, number_of_drums)
+    return example[:sequence_length, :].flatten()
 
 def generate_beats(model_path="my_model.keras",
                    num_steps=settings["slices_to_generate"],
@@ -97,51 +110,38 @@ def generate_beats(model_path="my_model.keras",
     """
     Alternative main function to generate beats using the trained model.
     """
-    # Load the pre-trained model
-    model = load_model(os.path.join(model_path))
 
-    # Get number of instruments/drums
-    instruments = len(settings["midi_notes"])
+    for model_index in range(8, 17):
 
-    # Convert initial_slices to a numpy array
-    initial_slices = np.array([
-                                  1, 0, 0, 1,
-                                  0, 0, 0, 1,
-                                  0, 1, 0, 1,
-                                  0, 0, 0, 1,
-                              ] * instruments)
+        # Load the pre-trained model
+        model = load_model(os.path.join(f"linear_model_{model_index}.sav"))
 
-    # Generate new bar slices using the iterative process
-    final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
-                                                    decision_algorithm=decision_algorithm,
-                                                    instruments=instruments)
+        # Get number of instruments/drums
+        instruments = len(settings["midi_notes"])
 
-    # Generate image to visualize the generated bar slices
-    # visualize_bar_slices(final_slices, "generated.png")
+        file_path = os.path.join(f"img/linear_regression/window_size_{model_index}")
+        os.makedirs(file_path, exist_ok=True)
 
-    # Generate image to visualize the hypothesis vector
-    # visualize_bar_slices(hypothesis_vector, "hypothesis.png")
-    # print(final_slices)
+        for initial_beat_index in range(100):
+            # Convert initial_slices to a numpy array
+            initial_slices = get_initial_beat_from_dataset(initial_beat_index, window_size=model_index)
 
-    # Create figure name
-    figure_name = save_path + "generated"
+            # Generate new bar slices using the iterative process
+            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=threshold_signal, instruments=instruments, window_size=model_index)
+            plot(generated_slices, os.path.join(file_path, f"generated_threshold_signal_{initial_beat_index}.png"))
 
-    if decision_algorithm == threshold_signal:
-        figure_name += "_threshold_" + str(settings['threshold'])
-    elif decision_algorithm == probability_signal:
-        figure_name += "_probability"
-    elif decision_algorithm == combined_decision_algorithm:
-        figure_name += "_combined_" + str(settings['scaling_factor'])
+            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=probability_signal, instruments=instruments, window_size=model_index)
+            plot(generated_slices, os.path.join(file_path, f"generated_probability_signal_{initial_beat_index}.png"))
 
-    figure_name += ".png"
+            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=combined_decision_algorithm, instruments=instruments, window_size=model_index)
+            plot(generated_slices, os.path.join(file_path, f"generated_combined_signal_{initial_beat_index}.png"))
 
-    # Plot the generated slices
-    plot(final_slices, figure_name=os.path.join("img", "", figure_name))
+            
 
 
 def main():
     parser = argparse.ArgumentParser(description="Generate beats using a trained model.")
-    parser.add_argument('--model_path', default="my_model.keras", help="Path to the trained model file (in .keras format)")
+    parser.add_argument('--model_path', default="linear_model.sav", help="Path to the trained model file (in .keras format)")
     parser.add_argument('--num_steps', type=int, default=settings["slices_to_generate"], help="Number of bar slices to generate")
 
     args = parser.parse_args()

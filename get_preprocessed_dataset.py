@@ -1,28 +1,28 @@
 import numpy as np
-
+from beat_generator import plot as plot_beat
 
 def prepare_data_for_forecasting(data, n_steps, split_value=0.7):
-    # Split the data into train and test sets
-    train_size = int(len(data) * split_value)
-    train_data = data[:train_size]
-    test_data = data[train_size:]
-
-    # Prepare train data
+    # data shape: (number_of_timesteps, number_of_drums, number_of_examples)
+    number_of_examples = data.shape[2]
+    train_size = int(number_of_examples * split_value)
+    
+    # Initialize lists for the training and testing sets
     X_train, y_train = [], []
-    for i in range(len(train_data) - n_steps):
-        X_train.append(train_data[i:(i + n_steps)])
-        y_train.append(train_data[i + n_steps])
-    X_train = np.array(X_train)
-    y_train = np.array(y_train)
-
-    # Prepare test data
     X_test, y_test = [], []
-    for i in range(len(test_data) - n_steps):
-        X_test.append(test_data[i:(i + n_steps)])
-        y_test.append(test_data[i + n_steps])
-    X_test = np.array(X_test)
-    y_test = np.array(y_test)
 
+    # Function to create datasets
+    def create_dataset(data, start, end):
+        X, y = [], []
+        for i in range(start, end):
+            for j in range(data.shape[0] - n_steps):
+                X.append(data[j:(j + n_steps), :, i])
+                y.append(data[j + n_steps, :, i])
+        return np.array(X), np.array(y)
+
+    # Prepare training and testing datasets
+    X_train, y_train = create_dataset(data, 0, train_size)
+    X_test, y_test = create_dataset(data, train_size, number_of_examples)
+    
     return X_train, X_test, y_train, y_test
 
 

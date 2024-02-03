@@ -22,8 +22,8 @@ settings = {
         # 44: "Pedal Hi-Hat",
         # 45: "Low Tom 1",
         # 46: "Hi-Hat Open",
-        # 49: "Crash Cymbal 1",
-        50: "High Tom"
+        49: "Crash Cymbal 1",
+        # 50: "High Tom"
         # 51: "Ride Cymbal 1",
         # 53: "Ride Bell",
         # 56: "Cowbell",

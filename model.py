@@ -25,14 +25,18 @@ def train_model(model_name="my_model.keras", window=settings["window"], data_pat
 
 def main():
     parser = argparse.ArgumentParser(description="Train and save/load a TensorFlow model.")
-    parser.add_argument('--model_path', default='my_model.keras', help="Path to save/load the model")
+    parser.add_argument('--model_path', default='linear_model.sav', help="Path to save/load the model")
     parser.add_argument('--window', default=settings["window"], help="the size of the window of the previous barslices")
-    parser.add_argument('--data_path', default='rockdata.npy', help="Path to the dataset")
+    parser.add_argument('--data_path', default='data.npy', help="Path to the dataset")
     parser.add_argument('--epochs', default=settings["epochs"], help="number of training epochs")
     
     args = parser.parse_args()
 
-    train_model(args.model_path, args.window, args.data_path, args.epochs)
+    # for i in range(8, 32):
+    i = 16
+    model_path = f"linear_model_{i}.sav"
+    window_size = i
+    train_model(model_path, window_size, args.data_path, args.epochs)
 
 
 if __name__ == "__main__":
