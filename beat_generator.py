@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
+import matplotlib
 
 from decision_making import *
 
@@ -71,23 +72,63 @@ def visualize_bar_slices(bar_slices, img_path="generated.png"):
 
 
 def plot(slices, figure_name="generated.png"):
-    result_arrays = [[], [], [], []]
-
-    ordered_keys = sorted(settings["midi_notes"].keys())
-    for i, single_slice in enumerate(slices):
-        result_arrays[i % 4].append(single_slice)
-
-    print(result_arrays)
-    # Plot each array with subtitles
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
-
-    for i, result_array in enumerate(result_arrays):
-        axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
-        axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
-
-    plt.xlabel('Index')
+    no_instruments = 4  # Number of instruments
+    time_steps = len(slices) // no_instruments  # Assuming slices contain data for all instruments sequentially
+    
+    # Ensure we have a correct reshaping of the data
+    if len(slices) % no_instruments != 0:
+        print("Warning: The total number of slices is not evenly divisible by the number of instruments.")
+    
+    # Initialize a data matrix correctly shaped for the number of instruments and time steps
+    data = np.array(slices).reshape((no_instruments, time_steps), order='F')
+    
+    labels = ['BD', 'S', 'HH', 'C']  # Instrument labels
+    fig, axs = plt.subplots(no_instruments, 1, figsize=(8, 4), sharex=True, sharey=True, gridspec_kw={'hspace': 0.02})
+    plt.subplots_adjust(hspace=0.5)  # Adjust space between plots
+    
+    for i in range(no_instruments):
+        axs[i].imshow(data[i:i+1], cmap='binary', aspect='equal')  # Change aspect ratio to 'auto'
+        axs[i].set_yticks([])  # Remove y-axis ticks
+        axs[i].set_ylabel(labels[i], rotation=0, labelpad=20, ha='right')
+        axs[i].set_xticks(np.arange(0, time_steps, 16))
+        axs[i].set_xticks(np.arange(0, time_steps, 1), minor=True)
+        axs[i].tick_params(axis='x', which='major', length=10, width=2)
+        
+        for spine in axs[i].spines.values():
+            spine.set_visible(False)
+    
+    plt.tight_layout()
     plt.savefig(figure_name)
     plt.close()
+
+    # no_instruments = len(settings["midi_notes"])
+
+    # # Set font size
+    # font = {'family': 'normal',
+    #         # 'weight': 'bold',
+    #         'size': 20}
+
+    # matplotlib.rc('font', **font)
+
+    # # Split the slices into arrays for each instrument
+    # result_arrays = np.empty((no_instruments, 0)).tolist()
+    # ordered_keys = sorted(settings["midi_notes"].keys())
+    # for i, single_slice in enumerate(slices):
+    #     result_arrays[i % no_instruments].append(single_slice)
+
+    # print(result_arrays)
+
+    # # Plot each array with subtitles
+    # fig, axs = plt.subplots(no_instruments, 1, figsize=(10, 2.5 * no_instruments), sharex=True)
+
+    # for i, result_array in enumerate(result_arrays):
+    #     axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
+    #     axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
+
+    # plt.xlabel(r'$t$')
+    # plt.setp(axs[:], ylabel=r'$\mathbf{u}(t)$')
+    # fig.tight_layout()
+    # plt.savefig(figure_name)
 
 def get_initial_beat_from_dataset(example_index=0, window_size=16):
     # Load the dataset
@@ -97,7 +138,7 @@ def get_initial_beat_from_dataset(example_index=0, window_size=16):
     example = dataset[:, :, example_index] 
 
     # Determine the length of the sequence you want to extract for each drum
-    sequence_length = window_size
+    sequence_length = 64
 
     # Extract the initial sequences for every drum
     # This results in a matrix of shape (sequence_length, number_of_drums)
@@ -111,7 +152,7 @@ def generate_beats(model_path="my_model.keras",
     Alternative main function to generate beats using the trained model.
     """
 
-    for model_index in range(8, 17):
+    for model_index in range(8, 9, 8):
 
         # Load the pre-trained model
         model = load_model(os.path.join(f"linear_model_{model_index}.sav"))
@@ -119,22 +160,23 @@ def generate_beats(model_path="my_model.keras",
         # Get number of instruments/drums
         instruments = len(settings["midi_notes"])
 
-        file_path = os.path.join(f"img/linear_regression/window_size_{model_index}")
+        file_path = os.path.join(f"img/linear_regression/generated_new/")
         os.makedirs(file_path, exist_ok=True)
 
-        for initial_beat_index in range(100):
+        for initial_beat_index in range(240, 250):
             # Convert initial_slices to a numpy array
             initial_slices = get_initial_beat_from_dataset(initial_beat_index, window_size=model_index)
+            plot(initial_slices, os.path.join(file_path, f"initial_beat_{initial_beat_index}.png"))
 
             # Generate new bar slices using the iterative process
-            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=threshold_signal, instruments=instruments, window_size=model_index)
-            plot(generated_slices, os.path.join(file_path, f"generated_threshold_signal_{initial_beat_index}.png"))
+            # generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=threshold_signal, instruments=instruments, window_size=model_index)
+            # plot(generated_slices, os.path.join(file_path, f"generated_threshold_signal_{initial_beat_index}_{model_index}.png"))
 
-            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=probability_signal, instruments=instruments, window_size=model_index)
-            plot(generated_slices, os.path.join(file_path, f"generated_probability_signal_{initial_beat_index}.png"))
+            # generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=probability_signal, instruments=instruments, window_size=model_index)
+            # plot(generated_slices, os.path.join(file_path, f"generated_probability_signal_{initial_beat_index}.png"))
 
-            generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=combined_decision_algorithm, instruments=instruments, window_size=model_index)
-            plot(generated_slices, os.path.join(file_path, f"generated_combined_signal_{initial_beat_index}.png"))
+            # generated_slices, hypothesis = generate_beat(model, initial_slices, num_steps, decision_algorithm=combined_decision_algorithm, instruments=instruments, window_size=model_index)
+            # plot(generated_slices, os.path.join(file_path, f"generated_combined_signal_{initial_beat_index}.png"))
 
             
 

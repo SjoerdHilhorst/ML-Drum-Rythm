@@ -20,7 +20,8 @@ def train_model(model_name="my_model.keras", window=settings["window"], data_pat
 
     # Evaluating model
     print("Evaluating model...")
-    print(algorithm.evaluate(X_test, y_test))
+    print(f"training score: {algorithm.evaluate(X_train, y_train)}")
+    print(f"Test score:     {algorithm.evaluate(X_test, y_test)}")
 
 
 def main():
@@ -32,11 +33,10 @@ def main():
     
     args = parser.parse_args()
 
-    # for i in range(8, 32):
-    i = 16
-    model_path = f"linear_model_{i}.sav"
-    window_size = i
-    train_model(model_path, window_size, args.data_path, args.epochs)
+    for i in range(33, 65):
+        model_path = f"linear_model_{i}.sav"
+        window_size = i
+        train_model(model_path, window_size, args.data_path, args.epochs)
 
 
 if __name__ == "__main__":
