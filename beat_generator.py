@@ -77,7 +77,7 @@ def plot(slices, figure_name="generated.png"):
     matplotlib.rc('font', **font)
 
     # Split the slices into arrays for each instrument
-    result_arrays = [[]] * no_instruments
+    result_arrays = np.empty((no_instruments, 0)).tolist()
     ordered_keys = sorted(settings["midi_notes"].keys())
     for i, single_slice in enumerate(slices):
         result_arrays[i % no_instruments].append(single_slice)

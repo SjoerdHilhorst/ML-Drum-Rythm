@@ -44,5 +44,5 @@ settings = {
 
     # settings for the decision-making algorithms
     "scaling_factor": 4.0,
-    "threshold": 0.05,
+    "threshold": 0.5,
 }
