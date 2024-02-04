@@ -3,6 +3,7 @@ import argparse
 from pprint import pprint
 from settings import settings
 import numpy as np
+import os
 
 def parse_csv(file_path):
     """
@@ -57,14 +58,13 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
     """
     Process the MIDI data and generate vectors for each bar slice.
     """
-    vectors = []
+    vectors = np.array([])
 
     ticks_per_bar = get_ticks_per_bar(midi_data, bar_slices)
     total_bar_slices = get_total_bar_slices(midi_data, ticks_per_bar, bar_slices)
-
     drums = list(settings["midi_notes"].keys())
 
-    bar_slice_data = {drum: [0] * total_bar_slices for drum in drums}
+    bar_slice_data = {drum: [0] * 64 for drum in drums}
 
     for entry in midi_data:
         if entry['event_type'] != 'Note_on_c':
@@ -82,12 +82,17 @@ def process_midi_data(midi_data, bar_slices=16, use_velocity=False):
         
         bar_slice_idx = tick // (ticks_per_bar // bar_slices)
 
-        # Update the velocity information in bar_slice_data
-        bar_slice_data[note][bar_slice_idx] = velocity if use_velocity else 1
+        # # Update the velocity information in bar_slice_data
+        if(bar_slice_idx < len(bar_slice_data[note])):
+            bar_slice_data[note][bar_slice_idx] = velocity if use_velocity else 1
 
     # Convert bar_slice_data to a list of vectors
     for drum, velocities in bar_slice_data.items():
-        vectors.append(velocities)
+        if len(vectors) == 0:
+            vectors = velocities
+        else:
+            vectors = np.vstack([vectors, velocities])
+
 
     return vectors
 
@@ -105,15 +110,25 @@ def main():
     print("Saved drum data to data.npy!")
 
 
-def preprocess(input_file, bar_slices=16, use_velocity=False):
+def preprocess(data_directory, bar_slices=16, use_velocity=False):
     """
     Preprocess the MIDI data and generate vectors for each bar slice.
     Alternative to main() for use in other files.
     """
-    midi_data = parse_csv(input_file)
-    vectors = process_midi_data(midi_data, bar_slices=bar_slices, use_velocity=use_velocity)
+    all_examples = np.zeros((5161, 4, 64))  # Initialize a new vector with zeros
 
-    np.save("data.npy", vectors)
+    i=0
+    for file_name in os.listdir(data_directory):
+        file_path = os.path.join(data_directory, file_name)
+        if os.path.isfile(file_path):
+            midi_data = parse_csv(file_path)
+            
+            vector = process_midi_data(midi_data, bar_slices=bar_slices, use_velocity=use_velocity)
+            all_examples[i] = vector
+            i+=1
+    print("Dataset with loaded with shape:")
+    print(all_examples.shape)
+    np.save("data.npy", all_examples)
     print("Saved drum data to data.npy!")
 
 

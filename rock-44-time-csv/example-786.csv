@@ -1,0 +1,26 @@
+0, 0, Header, 1, 2, 480
+1, 0, Start_track
+1, 0, Tempo, 428571
+1, 0, Time_signature, 4, 2, 24, 8
+1, 0, Key_signature, 0, "major"
+1, 1, End_track
+2, 0, Start_track
+2, 0, Program_c, 9, 0
+2, 0, Control_c, 9, 4, 8
+2, 242, Control_c, 9, 4, 9
+2, 242, Control_c, 9, 4, 10
+2, 1063, Control_c, 9, 4, 11
+2, 1168, Control_c, 9, 4, 9
+2, 1267, Control_c, 9, 4, 7
+2, 1567, Control_c, 9, 4, 8
+2, 1866, Control_c, 9, 4, 9
+2, 2298, Control_c, 9, 4, 8
+2, 2732, Control_c, 9, 4, 7
+2, 3590, Control_c, 9, 4, 8
+2, 4414, Control_c, 9, 4, 9
+2, 4839, Control_c, 9, 4, 8
+2, 5263, Control_c, 9, 4, 7
+2, 6134, Control_c, 9, 4, 8
+2, 7011, Control_c, 9, 4, 9
+2, 7012, End_track
+0, 0, End_of_file

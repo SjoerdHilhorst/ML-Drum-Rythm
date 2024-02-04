@@ -1,0 +1,96 @@
+0, 0, Header, 1, 2, 480
+1, 0, Start_track
+1, 0, Tempo, 638297
+1, 0, Time_signature, 4, 2, 24, 8
+1, 0, Key_signature, 0, "major"
+1, 1, End_track
+2, 0, Start_track
+2, 0, Title_t, "Midi Drums"
+2, 0, Program_c, 9, 0
+2, 0, Control_c, 9, 4, 0
+2, 491, Note_on_c, 9, 40, 127
+2, 495, Control_c, 9, 4, 0
+2, 495, Note_on_c, 9, 26, 127
+2, 567, Note_on_c, 9, 40, 0
+2, 571, Note_on_c, 9, 26, 0
+2, 860, Note_on_c, 9, 48, 78
+2, 911, Note_on_c, 9, 43, 127
+2, 936, Note_on_c, 9, 48, 0
+2, 969, Note_on_c, 9, 36, 121
+2, 986, Note_on_c, 9, 43, 0
+2, 1045, Note_on_c, 9, 36, 0
+2, 1205, Note_on_c, 9, 36, 117
+2, 1281, Note_on_c, 9, 36, 0
+2, 1438, Note_on_c, 9, 40, 127
+2, 1441, Control_c, 9, 4, 0
+2, 1441, Note_on_c, 9, 26, 127
+2, 1513, Note_on_c, 9, 40, 0
+2, 1517, Note_on_c, 9, 26, 0
+2, 1908, Note_on_c, 9, 36, 127
+2, 1984, Note_on_c, 9, 36, 0
+2, 2386, Control_c, 9, 4, 0
+2, 2386, Note_on_c, 9, 26, 127
+2, 2386, Note_on_c, 9, 40, 127
+2, 2462, Note_on_c, 9, 26, 0
+2, 2462, Note_on_c, 9, 40, 0
+2, 2769, Note_on_c, 9, 48, 62
+2, 2814, Note_on_c, 9, 43, 106
+2, 2845, Note_on_c, 9, 48, 0
+2, 2879, Note_on_c, 9, 36, 109
+2, 2890, Note_on_c, 9, 43, 0
+2, 2955, Note_on_c, 9, 36, 0
+2, 3116, Note_on_c, 9, 36, 106
+2, 3192, Note_on_c, 9, 36, 0
+2, 3343, Note_on_c, 9, 52, 127
+2, 3349, Note_on_c, 9, 40, 127
+2, 3418, Note_on_c, 9, 52, 0
+2, 3424, Note_on_c, 9, 40, 0
+2, 3840, Note_on_c, 9, 36, 127
+2, 3916, Note_on_c, 9, 36, 0
+2, 4290, Control_c, 9, 4, 0
+2, 4290, Note_on_c, 9, 26, 127
+2, 4293, Note_on_c, 9, 40, 127
+2, 4366, Note_on_c, 9, 26, 0
+2, 4368, Note_on_c, 9, 40, 0
+2, 4688, Note_on_c, 9, 48, 71
+2, 4740, Note_on_c, 9, 43, 104
+2, 4764, Note_on_c, 9, 48, 0
+2, 4794, Note_on_c, 9, 36, 103
+2, 4816, Note_on_c, 9, 43, 0
+2, 4870, Note_on_c, 9, 36, 0
+2, 5035, Note_on_c, 9, 36, 108
+2, 5111, Note_on_c, 9, 36, 0
+2, 5265, Note_on_c, 9, 38, 127
+2, 5274, Control_c, 9, 4, 0
+2, 5274, Note_on_c, 9, 26, 127
+2, 5341, Note_on_c, 9, 38, 0
+2, 5350, Note_on_c, 9, 26, 0
+2, 5738, Note_on_c, 9, 36, 114
+2, 5813, Note_on_c, 9, 36, 0
+2, 5822, Note_on_c, 9, 38, 8
+2, 5898, Note_on_c, 9, 38, 0
+2, 6226, Note_on_c, 9, 40, 127
+2, 6227, Control_c, 9, 4, 0
+2, 6227, Note_on_c, 9, 26, 127
+2, 6301, Note_on_c, 9, 40, 0
+2, 6303, Note_on_c, 9, 26, 0
+2, 6452, Note_on_c, 9, 48, 127
+2, 6528, Note_on_c, 9, 48, 0
+2, 6568, Note_on_c, 9, 48, 118
+2, 6644, Note_on_c, 9, 48, 0
+2, 6671, Note_on_c, 9, 36, 74
+2, 6747, Note_on_c, 9, 36, 0
+2, 6795, Note_on_c, 9, 48, 127
+2, 6871, Note_on_c, 9, 48, 0
+2, 6908, Note_on_c, 9, 48, 127
+2, 6984, Note_on_c, 9, 48, 0
+2, 7153, Note_on_c, 9, 40, 127
+2, 7164, Note_on_c, 9, 36, 118
+2, 7229, Note_on_c, 9, 40, 0
+2, 7240, Note_on_c, 9, 36, 0
+2, 7395, Note_on_c, 9, 38, 126
+2, 7471, Note_on_c, 9, 38, 0
+2, 7525, Note_on_c, 9, 40, 127
+2, 7601, Note_on_c, 9, 40, 0
+2, 7602, End_track
+0, 0, End_of_file

@@ -7,7 +7,7 @@ if __name__ == "__main__":
     model_path = 'linear_model.sav'
 
     # Obtain dataset
-    preprocess("drum_patterns_csv/2ROCK.csv")
+    preprocess("rock-44-time-csv")
 
     # Train model
     train_model(model_path)

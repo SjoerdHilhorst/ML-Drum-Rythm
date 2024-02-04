@@ -1,0 +1,70 @@
+0, 0, Header, 1, 2, 480
+1, 0, Start_track
+1, 0, Tempo, 638297
+1, 0, Time_signature, 4, 2, 24, 8
+1, 0, Key_signature, 0, "major"
+1, 1, End_track
+2, 0, Start_track
+2, 0, Title_t, "Midi Drums"
+2, 0, Program_c, 9, 0
+2, 0, Control_c, 9, 4, 90
+2, 2, Note_on_c, 9, 36, 127
+2, 78, Note_on_c, 9, 36, 0
+2, 518, Note_on_c, 9, 40, 127
+2, 594, Note_on_c, 9, 40, 0
+2, 977, Note_on_c, 9, 36, 83
+2, 1052, Note_on_c, 9, 36, 0
+2, 1222, Note_on_c, 9, 36, 127
+2, 1298, Note_on_c, 9, 36, 0
+2, 1343, Note_on_c, 9, 43, 127
+2, 1419, Note_on_c, 9, 43, 0
+2, 1467, Note_on_c, 9, 43, 127
+2, 1543, Note_on_c, 9, 43, 0
+2, 1937, Note_on_c, 9, 36, 127
+2, 1941, Note_on_c, 9, 52, 85
+2, 1941, Note_on_c, 9, 55, 86
+2, 2013, Note_on_c, 9, 36, 0
+2, 2017, Note_on_c, 9, 52, 0
+2, 2017, Note_on_c, 9, 55, 0
+2, 2387, Note_on_c, 9, 40, 113
+2, 2418, Note_on_c, 9, 40, 0
+2, 2418, Note_on_c, 9, 40, 127
+2, 2463, Note_on_c, 9, 40, 0
+2, 2840, Note_on_c, 9, 36, 127
+2, 2915, Note_on_c, 9, 36, 0
+2, 3085, Note_on_c, 9, 36, 127
+2, 3160, Note_on_c, 9, 36, 0
+2, 3337, Note_on_c, 9, 40, 127
+2, 3412, Note_on_c, 9, 40, 0
+2, 3849, Note_on_c, 9, 36, 127
+2, 3925, Note_on_c, 9, 36, 0
+2, 4323, Note_on_c, 9, 40, 127
+2, 4400, Note_on_c, 9, 40, 0
+2, 4789, Note_on_c, 9, 36, 127
+2, 4865, Note_on_c, 9, 36, 0
+2, 5034, Note_on_c, 9, 36, 127
+2, 5110, Note_on_c, 9, 36, 0
+2, 5284, Note_on_c, 9, 40, 123
+2, 5316, Note_on_c, 9, 40, 0
+2, 5316, Note_on_c, 9, 40, 127
+2, 5359, Note_on_c, 9, 40, 0
+2, 5525, Note_on_c, 9, 43, 126
+2, 5601, Note_on_c, 9, 43, 0
+2, 5639, Note_on_c, 9, 48, 127
+2, 5715, Note_on_c, 9, 48, 0
+2, 5752, Note_on_c, 9, 36, 127
+2, 5828, Note_on_c, 9, 36, 0
+2, 6208, Note_on_c, 9, 40, 127
+2, 6232, Note_on_c, 9, 40, 0
+2, 6232, Note_on_c, 9, 40, 127
+2, 6284, Note_on_c, 9, 40, 0
+2, 6696, Note_on_c, 9, 36, 127
+2, 6772, Note_on_c, 9, 36, 0
+2, 6953, Note_on_c, 9, 36, 127
+2, 7029, Note_on_c, 9, 36, 0
+2, 7199, Note_on_c, 9, 40, 127
+2, 7225, Note_on_c, 9, 40, 0
+2, 7225, Note_on_c, 9, 40, 127
+2, 7275, Note_on_c, 9, 40, 0
+2, 7276, End_track
+0, 0, End_of_file

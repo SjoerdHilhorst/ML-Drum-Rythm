@@ -1,0 +1,66 @@
+0, 0, Header, 1, 2, 480
+1, 0, Start_track
+1, 0, Tempo, 638297
+1, 0, Time_signature, 4, 2, 24, 8
+1, 0, Key_signature, 0, "major"
+1, 1, End_track
+2, 0, Start_track
+2, 0, Title_t, "Midi Drums"
+2, 0, Program_c, 9, 0
+2, 0, Control_c, 9, 4, 90
+2, 0, Note_on_c, 9, 36, 127
+2, 76, Note_on_c, 9, 36, 0
+2, 483, Note_on_c, 9, 40, 127
+2, 559, Note_on_c, 9, 40, 0
+2, 933, Note_on_c, 9, 36, 127
+2, 1009, Note_on_c, 9, 36, 0
+2, 1185, Note_on_c, 9, 36, 127
+2, 1261, Note_on_c, 9, 36, 0
+2, 1448, Note_on_c, 9, 40, 127
+2, 1523, Note_on_c, 9, 40, 0
+2, 1922, Note_on_c, 9, 36, 127
+2, 1998, Note_on_c, 9, 36, 0
+2, 2438, Note_on_c, 9, 40, 127
+2, 2514, Note_on_c, 9, 40, 0
+2, 2897, Note_on_c, 9, 36, 83
+2, 2972, Note_on_c, 9, 36, 0
+2, 3142, Note_on_c, 9, 36, 127
+2, 3218, Note_on_c, 9, 36, 0
+2, 3263, Note_on_c, 9, 43, 127
+2, 3339, Note_on_c, 9, 43, 0
+2, 3387, Note_on_c, 9, 43, 127
+2, 3463, Note_on_c, 9, 43, 0
+2, 3857, Note_on_c, 9, 36, 127
+2, 3861, Note_on_c, 9, 52, 85
+2, 3861, Note_on_c, 9, 55, 86
+2, 3933, Note_on_c, 9, 36, 0
+2, 3937, Note_on_c, 9, 52, 0
+2, 3937, Note_on_c, 9, 55, 0
+2, 4307, Note_on_c, 9, 40, 113
+2, 4338, Note_on_c, 9, 40, 0
+2, 4338, Note_on_c, 9, 40, 127
+2, 4383, Note_on_c, 9, 40, 0
+2, 4760, Note_on_c, 9, 36, 127
+2, 4835, Note_on_c, 9, 36, 0
+2, 5005, Note_on_c, 9, 36, 127
+2, 5080, Note_on_c, 9, 36, 0
+2, 5257, Note_on_c, 9, 40, 127
+2, 5332, Note_on_c, 9, 40, 0
+2, 5769, Note_on_c, 9, 36, 127
+2, 5845, Note_on_c, 9, 36, 0
+2, 6243, Note_on_c, 9, 40, 127
+2, 6320, Note_on_c, 9, 40, 0
+2, 6709, Note_on_c, 9, 36, 127
+2, 6785, Note_on_c, 9, 36, 0
+2, 6954, Note_on_c, 9, 36, 127
+2, 7030, Note_on_c, 9, 36, 0
+2, 7204, Note_on_c, 9, 40, 123
+2, 7236, Note_on_c, 9, 40, 0
+2, 7236, Note_on_c, 9, 40, 127
+2, 7279, Note_on_c, 9, 40, 0
+2, 7445, Note_on_c, 9, 43, 126
+2, 7521, Note_on_c, 9, 43, 0
+2, 7559, Note_on_c, 9, 48, 127
+2, 7635, Note_on_c, 9, 48, 0
+2, 7636, End_track
+0, 0, End_of_file
