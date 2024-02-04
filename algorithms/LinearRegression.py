@@ -2,6 +2,7 @@ from algorithms.BaseModel import BaseModel
 import sklearn.linear_model as lm
 import pickle
 from utils.save_model import save_model
+import numpy as np
 
 
 class LinearRegression(BaseModel):
@@ -54,3 +55,17 @@ class LinearRegression(BaseModel):
         :return: the evaluation results
         """
         return self.model.score(X_test, y_test)
+
+    def evaluate_with_decision_algorithm(self, X_test, y_test, decision_algorithm):
+        """
+        Evaluates a linear regression model with a decision algorithm.
+
+        :param model: the model to evaluate
+        :param X_test: the test data
+        :param y_test: the test labels
+        :param decision_algorithm: the decision algorithm
+        :return: the evaluation results
+        """
+        predictions = self.model.predict(X_test)
+        decided = decision_algorithm(predictions)
+        return np.sum(decided == y_test) / np.multiply(y_test.shape[0], y_test.shape[1])

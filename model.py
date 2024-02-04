@@ -1,10 +1,18 @@
 import argparse
+import os
+
 from algorithms.LinearRegression import LinearRegression
 from settings import settings
 from get_preprocessed_dataset import get_dataset_with_multiple_songs
 
 
-def train_model(model_name="my_model.keras", window=settings["window"], data_path="data.npy", epochs=settings["epochs"]):
+def train_model(model_name="my_model.keras",
+                window=settings["window"],
+                data_path="data.npy",
+                save_path="img/unspecified/",
+                epochs=settings["epochs"],
+                decision_algorithm=None,
+                filename="accuracies.txt"):
     # Obtain dataset
     X_train, X_test, y_train, y_test = get_dataset_with_multiple_songs(data_path, window)
 
@@ -20,7 +28,31 @@ def train_model(model_name="my_model.keras", window=settings["window"], data_pat
 
     # Evaluating model
     print("Evaluating model...")
-    print(algorithm.evaluate(X_test, y_test))
+    if decision_algorithm is None:
+        print(algorithm.evaluate(X_test, y_test))
+    else:
+        train_accuracy = algorithm.evaluate_with_decision_algorithm(X_train, y_train, decision_algorithm)
+        test_accuracy = algorithm.evaluate_with_decision_algorithm(X_test, y_test, decision_algorithm)
+
+        # Save accuracies to file
+        # if not os.path.exists(save_path + filename):
+        #     # Create new file and write
+        #     with open(save_path + filename, "w") as file:
+        #         file.write("Scaling factor & Train accuracy & Test accuracy\n")
+        #         file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+        # else:
+        #     # Append to file
+        #     with open(save_path + filename, "a") as file:
+        #         file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+
+        if not os.path.exists(save_path + filename):
+            # Create new file and write
+            with open(save_path + filename, "w") as file:
+                file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+        else:
+            # Append to file
+            with open(save_path + filename, "a") as file:
+                file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
 
 
 def main():

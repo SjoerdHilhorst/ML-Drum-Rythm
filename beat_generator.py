@@ -77,7 +77,7 @@ def plot(slices, figure_name="generated.png"):
     matplotlib.rc('font', **font)
 
     # Split the slices into arrays for each instrument
-    result_arrays = [[]] * no_instruments
+    result_arrays = np.empty((no_instruments, 0)).tolist()
     ordered_keys = sorted(settings["midi_notes"].keys())
     for i, single_slice in enumerate(slices):
         result_arrays[i % no_instruments].append(single_slice)
@@ -91,8 +91,8 @@ def plot(slices, figure_name="generated.png"):
         axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
         axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
 
-    plt.xlabel(r'$n$')
-    plt.setp(axs[:], ylabel=r'$\mathbf{u}(n)$')
+    plt.xlabel(r'$t$')
+    plt.setp(axs[:], ylabel=r'$\mathbf{u}(t)$')
     fig.tight_layout()
     plt.savefig(figure_name)
     plt.show()
