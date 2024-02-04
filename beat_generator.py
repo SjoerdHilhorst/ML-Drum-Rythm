@@ -1,15 +1,11 @@
 import argparse
-import os
 
-import numpy as np
+import matplotlib
 import tensorflow as tf
-from settings import settings
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
 import pickle
 
-from decision_making import threshold_signal, probability_signal, sigmoid_signal
+from settings import settings
+from decision_making import *
 
 
 def load_model(model_path):
@@ -22,7 +18,7 @@ def load_model(model_path):
     return model
 
 
-def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments, threshold=0.5):
+def generate_beat(model, initial_slices, num_steps, decision_algorithm, instruments):
     generated_slices = initial_slices.copy()
     generated_hypothesis_vector = np.array([])
 
@@ -70,25 +66,43 @@ def visualize_bar_slices(bar_slices, img_path="generated.png"):
     plt.show()
 
 
-def plot(slices):
-    result_arrays = [[], [], [], []]
+def plot(slices, figure_name="generated.png"):
+    no_instruments = len(settings["midi_notes"])
 
+    # Set font size
+    font = {'family': 'normal',
+            # 'weight': 'bold',
+            'size': 20}
+
+    matplotlib.rc('font', **font)
+
+    # Split the slices into arrays for each instrument
+    result_arrays = [[]] * no_instruments
     ordered_keys = sorted(settings["midi_notes"].keys())
     for i, single_slice in enumerate(slices):
-        result_arrays[i % 4].append(single_slice)
+        result_arrays[i % no_instruments].append(single_slice)
 
     print(result_arrays)
+
     # Plot each array with subtitles
-    fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
+    fig, axs = plt.subplots(no_instruments, 1, figsize=(10, 2.5 * no_instruments), sharex=True)
 
     for i, result_array in enumerate(result_arrays):
         axs[i].stem(result_array, basefmt='b-', linefmt='b-', markerfmt='bo')
         axs[i].set_title(f'{settings["midi_notes"][ordered_keys[i]]}')
 
-    plt.xlabel('Index')
+    plt.xlabel(r'$n$')
+    plt.setp(axs[:], ylabel=r'$\mathbf{u}(n)$')
+    fig.tight_layout()
+    plt.savefig(figure_name)
     plt.show()
 
-def generate_beats(model_path="my_model.keras", num_steps=settings["slices_to_generate"]):
+
+def generate_beats(model_path="my_model.keras",
+                   num_steps=settings["slices_to_generate"],
+                   decision_algorithm=threshold_signal,
+                   save_path="linear_regression/",
+                   initial_slices=None):
     """
     Alternative main function to generate beats using the trained model.
     """
@@ -98,29 +112,43 @@ def generate_beats(model_path="my_model.keras", num_steps=settings["slices_to_ge
     # Get number of instruments/drums
     instruments = len(settings["midi_notes"])
 
-    # Convert initial_slices to a numpy array
-    initial_slices = np.array([
-                                  1, 0, 0, 1,
-                                  0, 0, 0, 1,
-                                  0, 1, 0, 1,
-                                  0, 0, 0, 1,
-                              ] * instruments)
-
-    # Define the decision algorithm
-    decision_algorithm = threshold_signal
+    # If no initial slices are provided, use a hardcoded sequence
+    if initial_slices is None:
+        initial_slices = np.array([
+                             1, 0, 0, 1,
+                             0, 0, 0, 1,
+                             0, 1, 0, 1,
+                             0, 0, 0, 1,
+                         ] * instruments)
 
     # Generate new bar slices using the iterative process
-    final_slices, hypothesis_vector = generate_beat(model, initial_slices, num_steps,
-                                                    decision_algorithm=decision_algorithm, instruments=instruments)
+    final_slices, hypothesis_vector = generate_beat(model=model,
+                                                    initial_slices=initial_slices,
+                                                    num_steps=num_steps,
+                                                    decision_algorithm=decision_algorithm,
+                                                    instruments=instruments)
 
-    # Generate image to visualize the generated bar slices
-    visualize_bar_slices(final_slices, "generated.png")
+    # Create figure name
+    figure_name = save_path + "generated"
 
-    # Generate image to visualize the hypothesis vector
-    visualize_bar_slices(hypothesis_vector, "hypothesis.png")
-    print(final_slices)
+    if decision_algorithm == threshold_signal:
+        figure_name += "_threshold_" + str(settings['threshold'])
+    elif decision_algorithm == probability_signal:
+        figure_name += "_probability"
+    elif decision_algorithm == combined_decision_algorithm:
+        figure_name += "_combined_" + str(settings['scaling_factor'])
 
-    plot(final_slices)
+    # If the img directory does not exist, create it
+    if not os.path.exists(save_path):
+        print("Creating directory: ", save_path)
+        os.makedirs(save_path)
+
+    # Plot the generated slices
+    plot(final_slices, figure_name=figure_name + ".png")
+
+    # Save the bar slices to a file
+    np.save(figure_name + ".npy", final_slices)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate beats using a trained model.")
@@ -130,6 +158,7 @@ def main():
     args = parser.parse_args()
 
     generate_beats(args.model_path, args.num_steps)
+
 
 if __name__ == "__main__":
     main()
