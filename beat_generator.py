@@ -6,6 +6,7 @@ import pickle
 
 from settings import settings
 from decision_making import *
+from utils.plot import plot as plot_beatifully
 
 
 def load_model(model_path):
@@ -144,7 +145,7 @@ def generate_beats(model_path="my_model.keras",
         os.makedirs(save_path)
 
     # Plot the generated slices
-    plot(final_slices, figure_name=figure_name + ".png")
+    plot_beatifully(final_slices, figure_name=figure_name + ".png")
 
     # Save the bar slices to a file
     np.save(figure_name + ".npy", final_slices)

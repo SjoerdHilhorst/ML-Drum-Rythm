@@ -8,7 +8,7 @@ if __name__ == "__main__":
     model_path = 'linear_model.sav'
     initial_drumbeat = 71
     data_path = 'data/groove_rock_4drums.npy'
-    save_path = "img/groove_rock_4drums/linear_regression/initial_drumbeat" + str(initial_drumbeat) + "/"
+    save_path = "img/groove_rock_4drums/linear_regression/initial_drumbeat" + str(initial_drumbeat) + "_window" + str(settings["window"]) + "_beautiful/"
 
     # Train model
     train_model(model_path, data_path=data_path, save_path="img/groove_rock_4drums/linear_regression/trained_model_accuracies/")
@@ -26,8 +26,8 @@ if __name__ == "__main__":
     #     train_model(model_path, data_path=data_path, decision_algorithm=combined_decision_algorithm,
     #                 filename="accuracy_scaling_factor.txt",
     #                 save_path="img/groove_rock_4drums/linear_regression/trained_model_accuracies/")
-
-    # Alternative: repeat non-deterministic decision-making algorithm
+    #
+    # # Alternative: repeat non-deterministic decision-making algorithm
     # for _ in range(100):
     #     train_model(model_path, data_path=data_path, decision_algorithm=probability_signal,
     #                 filename="accuracy_probability.txt",
@@ -38,13 +38,13 @@ if __name__ == "__main__":
     initial_slices = data[:settings["window"], :, initial_drumbeat].flatten()
 
     # Generate beats
-    # for decision_making_algorithm in [threshold_signal, probability_signal, combined_decision_algorithm]:
-    #     generate_beats(model_path,
-    #                    decision_algorithm=decision_making_algorithm,
-    #                    save_path=save_path,
-    #                    initial_slices=initial_slices)
+    for decision_making_algorithm in [probability_signal]: #[threshold_signal, probability_signal, combined_decision_algorithm]:
+        generate_beats(model_path,
+                       decision_algorithm=decision_making_algorithm,
+                       save_path=save_path,
+                       initial_slices=initial_slices)
 
-    # # Alternative: vary over threshold values
+    # Alternative: vary over threshold values
     for threshold in [0.1, 0.25, 0.5, 0.75, 0.9]:
         settings['threshold'] = threshold
         generate_beats(model_path,

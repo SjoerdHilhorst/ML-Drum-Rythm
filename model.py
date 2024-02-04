@@ -4,6 +4,7 @@ import os
 from algorithms.LinearRegression import LinearRegression
 from settings import settings
 from get_preprocessed_dataset import get_dataset_with_multiple_songs
+from decision_making import *
 
 
 def train_model(model_name="my_model.keras",
@@ -35,24 +36,37 @@ def train_model(model_name="my_model.keras",
         test_accuracy = algorithm.evaluate_with_decision_algorithm(X_test, y_test, decision_algorithm)
 
         # Save accuracies to file
-        # if not os.path.exists(save_path + filename):
-        #     # Create new file and write
-        #     with open(save_path + filename, "w") as file:
-        #         file.write("Scaling factor & Train accuracy & Test accuracy\n")
-        #         file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
-        # else:
-        #     # Append to file
-        #     with open(save_path + filename, "a") as file:
-        #         file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+        if decision_algorithm == threshold_signal:
+            if not os.path.exists(save_path + filename):
+                # Create new file and write
+                with open(save_path + filename, "w") as file:
+                    file.write("Threshold & Train accuracy & Test accuracy\n")
+                    file.write("{:.1f}".format(settings["threshold"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+            else:
+                # Append to file
+                with open(save_path + filename, "a") as file:
+                    file.write("{:.1f}".format(settings["threshold"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
 
-        if not os.path.exists(save_path + filename):
-            # Create new file and write
-            with open(save_path + filename, "w") as file:
-                file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
-        else:
-            # Append to file
-            with open(save_path + filename, "a") as file:
-                file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+        if decision_algorithm == combined_decision_algorithm:
+            if not os.path.exists(save_path + filename):
+                # Create new file and write
+                with open(save_path + filename, "w") as file:
+                    file.write("Scaling factor & Train accuracy & Test accuracy\n")
+                    file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+            else:
+                # Append to file
+                with open(save_path + filename, "a") as file:
+                    file.write("{:.1f}".format(settings["scaling_factor"]) + " & " + "{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+
+        if decision_algorithm == probability_signal:
+            if not os.path.exists(save_path + filename):
+                # Create new file and write
+                with open(save_path + filename, "w") as file:
+                    file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
+            else:
+                # Append to file
+                with open(save_path + filename, "a") as file:
+                    file.write("{:.3f}".format(train_accuracy) + " & " + "{:.3f}".format(test_accuracy) + "\n")
 
 
 def main():

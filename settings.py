@@ -2,7 +2,7 @@
 # https://www.zendrum.com/resource-site/drumnotes.htm
 settings = {
     # how many previous timesteps are used
-    "window": 16,
+    "window": 32,
 
     # use integer velocity values or boolean
     "use_velocity": False,
@@ -43,6 +43,6 @@ settings = {
     "models_dir": "models",
 
     # settings for the decision-making algorithms
-    "scaling_factor": 4.0,
+    "scaling_factor": 10.0,
     "threshold": 0.5,
 }
